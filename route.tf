@@ -18,7 +18,7 @@ resource "aws_nat_gateway" "gptea" {
   allocation_id = aws_eip.gptea_nat[count.index].id
   subnet_id     = aws_subnet.gptea_public[count.index].id
   tags = {
-    Name = "gptea-nat${var.availability_zones[count.index]}"
+    Name = "gptea-nat-${var.availability_zones[count.index]}"
   }
 }
 
@@ -43,7 +43,7 @@ resource "aws_nat_gateway" "gptea_test" {
   allocation_id = aws_eip.gptea_test_nat[count.index].id
   subnet_id     = aws_subnet.gptea_test_public[count.index].id
   tags = {
-    Name = "gptea-test-nat${var.availability_zones[count.index]}"
+    Name = "gptea-test-nat-${var.availability_zones[count.index]}"
   }
 }
 
@@ -60,20 +60,21 @@ resource "aws_route_table" "gptea_public" {
 }
 
 resource "aws_route_table" "gptea_private" {
+  count  = 2
   vpc_id = aws_vpc.gptea.id
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.gptea[0].id
+    nat_gateway_id = aws_nat_gateway.gptea[count.index].id
   }
   tags = {
-    Name = "gptea-rtb-private-{var.availability_zones[count.index]}"
+    Name = "gptea-rtb-private-${var.availability_zones[count.index]}"
   }
 }
 
 resource "aws_vpc_endpoint" "gptea_s3" {
   vpc_id          = aws_vpc.gptea.id
   service_name    = "com.amazonaws.ap-northeast-2.s3"
-  route_table_ids = [aws_route_table.gptea_private.id]
+  route_table_ids = aws_route_table.gptea_private[*].id
   tags = {
     Name = "gptea-vpce-s3"
   }
@@ -91,20 +92,21 @@ resource "aws_route_table" "gptea_test_public" {
 }
 
 resource "aws_route_table" "gptea_test_private" {
+  count  = 2
   vpc_id = aws_vpc.gptea_test.id
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.gptea_test[0].id
+    nat_gateway_id = aws_nat_gateway.gptea_test[count.index].id
   }
   tags = {
-    Name = "gptea-test-rtb-private-{var.availability_zones[count.index]}"
+    Name = "gptea-test-rtb-private-${var.availability_zones[count.index]}"
   }
 }
 
 resource "aws_vpc_endpoint" "gptea_test_s3" {
   vpc_id          = aws_vpc.gptea_test.id
   service_name    = "com.amazonaws.ap-northeast-2.s3"
-  route_table_ids = [aws_route_table.gptea_test_private.id]
+  route_table_ids = aws_route_table.gptea_test_private[*].id
   tags = {
     Name = "gptea-test-vpce-s3"
   }
