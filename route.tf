@@ -59,6 +59,12 @@ resource "aws_route_table" "gptea_public" {
   }
 }
 
+resource "aws_route_table_association" "gptea_public" {
+  count          = 2
+  subnet_id      = aws_subnet.gptea_public[count.index].id
+  route_table_id = aws_route_table.gptea_public.id
+}
+
 resource "aws_route_table" "gptea_private" {
   count  = 2
   vpc_id = aws_vpc.gptea.id
@@ -69,6 +75,12 @@ resource "aws_route_table" "gptea_private" {
   tags = {
     Name = "gptea-rtb-private-${var.availability_zones[count.index]}"
   }
+}
+
+resource "aws_route_table_association" "gptea_private" {
+  count          = 2
+  subnet_id      = aws_subnet.gptea_private[count.index].id
+  route_table_id = aws_route_table.gptea_private[count.index].id
 }
 
 resource "aws_vpc_endpoint" "gptea_s3" {
@@ -91,6 +103,12 @@ resource "aws_route_table" "gptea_test_public" {
   }
 }
 
+resource "aws_route_table_association" "gptea_test_public" {
+  count          = 2
+  subnet_id      = aws_subnet.gptea_test_public[count.index].id
+  route_table_id = aws_route_table.gptea_test_public.id
+}
+
 resource "aws_route_table" "gptea_test_private" {
   count  = 2
   vpc_id = aws_vpc.gptea_test.id
@@ -101,6 +119,12 @@ resource "aws_route_table" "gptea_test_private" {
   tags = {
     Name = "gptea-test-rtb-private-${var.availability_zones[count.index]}"
   }
+}
+
+resource "aws_route_table_association" "gptea_test_private" {
+  count          = 2
+  subnet_id      = aws_subnet.gptea_test_private[count.index].id
+  route_table_id = aws_route_table.gptea_test_private[count.index].id
 }
 
 resource "aws_vpc_endpoint" "gptea_test_s3" {
