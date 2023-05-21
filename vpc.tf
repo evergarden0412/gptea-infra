@@ -3,6 +3,12 @@ provider "aws" {
   profile = "keenranger"
 }
 
+provider "aws" {
+  alias   = "us-east-1"
+  region  = "us-east-1"
+  profile = "keenranger"
+}
+
 resource "aws_vpc" "gptea" {
   cidr_block = "10.0.0.0/16"
   tags = {
