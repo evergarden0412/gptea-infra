@@ -41,13 +41,13 @@ resource "aws_acm_certificate" "gptea_test" {
 }
 
 resource "aws_acm_certificate" "gptea_us_east_1" {
-  domain_name       = "*.gptea.keenranger.dev"
+  domain_name       = "gptea.keenranger.dev"
   validation_method = "DNS"
   provider          = aws.us-east-1
 }
   
 resource "aws_acm_certificate" "gptea_test_us_east_1" {
-  domain_name       = "*.gptea-test.keenranger.dev"
+  domain_name       = "gptea-test.keenranger.dev"
   validation_method = "DNS"
   provider          = aws.us-east-1
 }
