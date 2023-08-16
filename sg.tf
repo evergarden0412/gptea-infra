@@ -26,21 +26,6 @@ resource "aws_security_group" "gptea_test_private" {
   }
 }
 
-
-resource "aws_security_group" "gptea_db" {
-  name   = "gptea-db"
-  vpc_id = aws_vpc.gptea.id
-  ingress {
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    security_groups = [aws_security_group.gptea_private.id, aws_security_group.gptea_bastion.id]
-  }
-  tags = {
-    Name = "gptea-db"
-  }
-}
-
 resource "aws_security_group" "gptea_test_db" {
   name   = "gptea-test-db"
   vpc_id = aws_vpc.gptea_test.id
